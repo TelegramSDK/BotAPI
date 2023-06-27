@@ -1,0 +1,51 @@
+{
+    "name": "seba/telegram-api",
+    "description": "Unofficial Telegram Bot API PHP SDK",
+    "keywords": [
+        "telegram",
+        "api",
+        "bot",
+        "library",
+        "TelegramSDK",
+        "SDK"
+    ],
+    "homepage": "https://github.com/TelegramSDK/BotAPI",
+    "authors": [
+        {
+            "name": "Sebastiano",
+            "email": "sebastiano@racca.me",
+            "role": "Developer",
+            "homepage": "https://github.com/SebaOfficial"
+        }
+    ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "TelegramSDK\\BotAPI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TelegramSDK\\BotAPI\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/pest --fail-on-warning --profile",
+        "psalm": "@php vendor/bin/psalm",
+        "runkit": "./vendor/bin/install-runkit.sh"
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.7"
+    },
+    "require-dev": {
+        "pestphp/pest": "^2.8",
+        "vimeo/psalm": "^5.13",
+        "stevegrunwell/runkit7-installer": "^1.2"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
