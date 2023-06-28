@@ -69,9 +69,13 @@ class Bot{
                 "offset" => $offset + 1
             ])->body);
 
-        }else{
+        }else if($this->updatesMethod === self::UPDATES_FROM_WEBHOOK){
 
             return new Updates(json_decode(file_get_contents("php://input")));
+
+        } else{
+
+            return NULL;
 
         }
     }
