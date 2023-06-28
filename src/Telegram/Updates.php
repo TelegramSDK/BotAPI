@@ -10,7 +10,13 @@ class Updates{
 
     public function __construct(?object $data){
         if($data !== NULL){
-            $this->lastUpdateID = end($data->result)->update_id ?? null;
+
+            if(isset($data->result))
+                $this->lastUpdateID = end($data->result ?? [])->update_id ?? null;
+            else
+                $this->lastUpdateID = null;
+
+
             foreach($data as $key => $value)
                 $this->$key = $value;
         }

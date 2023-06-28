@@ -8,8 +8,7 @@ $bot = new Bot("YOUR_BOT_TOKEN", Bot::UPDATES_FROM_WEBHOOK);
 
 $update = $bot->updates();
 
-if($update->ok ?? false){
-    $update = $update->result;
+if(isset($update->update_id)){
 
     if(isset($update->message)){
         $bot->copyMessage([
