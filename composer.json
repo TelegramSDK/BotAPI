@@ -36,7 +36,8 @@
         "runkit": "./vendor/bin/install-runkit.sh"
     },
     "require": {
-        "guzzlehttp/guzzle": "^7.7"
+        "guzzlehttp/guzzle": "^7.7",
+        "php": ">=8.0"
     },
     "require-dev": {
         "pestphp/pest": "^2.8",
