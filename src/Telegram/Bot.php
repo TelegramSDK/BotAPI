@@ -1,4 +1,13 @@
 <?php
+/**
+ * Telegram Bot class.
+ * This class provides methods to send requests to Telegram or get the updates.
+ *
+ * @author Sebastiano Racca
+ * @package TelegramSDK\BotAPI\Telegram
+ * @see docs/00-introduction.md
+ * @see docs/01-updates.md
+ */
 
 declare(strict_types=1);
 
@@ -19,7 +28,16 @@ class Bot{
     public const UPDATES_FROM_GET_UPDATES = 2;
 
 
-    public function __construct(string $token, int $updatesMethod = 0){
+    /**
+     * Bot constructor.
+     *
+     * @param string $token                The Telegram bot token.
+     * @param int $updatesMethod           The updates method to use.
+     *
+     * @throws TelegramException           If an the provided token is invalid (in non-production mode).
+     * @throws \InvalidArgumentException   If an invalid updates method is provided (in non-production mode).
+     */
+    public function __construct(string $token, int $updatesMethod = self::NO_UPDATES){
         $this->token = $token;
         $this->isProduction = Utils::isProduction();
         $this->updatesMethod = $updatesMethod;
@@ -31,11 +49,27 @@ class Bot{
 
     }
 
+    /**
+     * Checks if the provided updates method is valid.
+     *
+     * @throws \InvalidArgumentException If the updates method is invalid.
+     */
     private function isValidUpdatesMethod(): void{
         if(!($this->updatesMethod >= 0 && $this->updatesMethod <= 2))
             throw new \InvalidArgumentException("Invalid updates method.");
     }
 
+    /**
+     * Sends a request to the Telegram API.
+     *
+     * @param string $method                 The method to call.
+     * @param array|object|null $arguments   The arguments for the method.
+     * @param int $timeout                   The request timeout.
+     *
+     * @return TelegramResponse|null         The response from the Telegram API or null on RequestException.
+     *
+     * @throws TelegramException             If an error occurs during the request (in non-production mode).
+     */
     private function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10): ?TelegramResponse{
         $telegram_url = "https://api.telegram.org/bot" . $this->token . "/$method";
         $client = new Guzzle(['timeout' => $timeout]);
@@ -62,6 +96,13 @@ class Bot{
         }
     }
 
+    /**
+     * Retrieves updates from the Telegram API.
+     *
+     * @param int|null $offset   The updates offset, only in UPDATES_FROM_WEBHOOK mode.
+     *
+     * @return Updates|null      The retrieved updates, null on NO_UPDATES mode.
+     */
     public function updates(?int $offset = null): ?Updates{
         if($this->updatesMethod === self::UPDATES_FROM_GET_UPDATES){
 
@@ -80,6 +121,14 @@ class Bot{
         }
     }
 
+    /**
+     * Magic method for dynamically calling API methods.
+     *
+     * @param string $method            The method to call.
+     * @param array $arguments          The arguments for the method.
+     *
+     * @return TelegramResponse|null    The response from sendRequest().
+     */
     public function __call($method, $arguments): ?TelegramResponse{
         return $this->sendRequest($method, ...$arguments);
     }
