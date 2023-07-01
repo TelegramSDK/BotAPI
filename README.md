@@ -1,24 +1,27 @@
-<div align="center">
- 	<img align="center" src="https://github.com/TelegramSDK/BotAPI/assets/115643607/2a39b451-4d91-450f-918b-cbadd042b135" alt="Telegram Logo" style="margin-bottom:20px;">
-	<h1>TelegramSDK - BotAPI</h1>
+<div style="text-align: center;">
+    <img title="BotAPI Logo" alt="BotAPI Logo" src="https://github.com/TelegramSDK/BotAPI/assets/115643607/2a39b451-4d91-450f-918b-cbadd042b135">
+
 </div>
+<br>
+<div style="text-align: center;">
+    <img title="Latest Version on Packagist" alt="Latest Version on Packagist" src="https://img.shields.io/packagist/v/telegramsdk/botapi.svg?label=composer&logo=composer">
+    <img title="PHP Version" alt="PHP Version" src="https://img.shields.io/packagist/dependency-v/telegramsdk/botapi/php?logo=php">
+</div>
+<br>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/telegramsdk/botapi.svg?label=composer&logo=composer)](https://packagist.org/packages/telegramsdk/botapi) ![PHP](https://img.shields.io/packagist/dependency-v/telegramsdk/botapi/php?logo=php)
 
-
-
-## 🛠 Instalation
+# 🛠 Instalation
 You can install the package via composer:
 
 ```bash
 composer require telegramsdk/botapi
 ```
 
-## ❔ Usage
+# ❔ Usage
 * Full documentation can be found [here](https://github.com/TelegramSDK/BotAPI/tree/main/docs).
 * Examples can be found [here](https://github.com/TelegramSDK/BotAPI/tree/main/examples).
 
-## 📝 Testing
+# 📝 Testing
 Run Unit tests:
 ```bash
 composer test
@@ -29,5 +32,5 @@ composer runkit
 ```
 
 
-## ⚖️ License
+# ⚖️ License
 This project is under the [MIT License](https://github.com/TelegramSDK/BotAPI/blob/main/LICENSE).
