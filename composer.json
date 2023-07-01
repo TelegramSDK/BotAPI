@@ -1,6 +1,6 @@
 {
     "name": "telegramsdk/botapi",
-    "description": "Unofficial Telegram Bot API PHP SDK",
+    "description": "Unofficial SDK for the Telegram Bot API.",
     "keywords": [
         "telegram",
         "api",

@@ -1,5 +1,5 @@
 <div align="center">
- 	<img align="center" src="https://github.com/TelegramSDK/BotAPI/assets/115643607/7d440cea-b563-49ce-b137-1144949d9636" alt="Telegram Logo" style="margin-bottom:20px;">
+ 	<img align="center" src="https://github.com/TelegramSDK/BotAPI/assets/115643607/2a39b451-4d91-450f-918b-cbadd042b135" alt="Telegram Logo" style="margin-bottom:20px;">
 	<h1>TelegramSDK - BotAPI</h1>
 </div>
 
