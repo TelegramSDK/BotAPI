@@ -23,7 +23,10 @@
     "autoload": {
         "psr-4": {
             "TelegramSDK\\BotAPI\\": "src/"
-        }
+        },
+        "files": [
+            "src/Utils/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

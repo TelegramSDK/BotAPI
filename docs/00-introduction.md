@@ -18,7 +18,7 @@ use TelegramSDK\BotAPI\Telegram\Bot;
 $bot = new Bot("YOUR_BOT_TOKEN"); // Your bot token
 
 $bot->sendMessage([ // Send a message
-    "chat_id" => 123 // Your chat id
+    "chat_id" => 123, // Your chat id
     "text" => "A message"
 ]);
 ```

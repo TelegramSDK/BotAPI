@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace TelegramSDK\BotAPI\Telegram;
 
-use TelegramSDK\BotAPI\Utils;
 use TelegramSDK\BotAPI\Exceptions\TelegramException;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\RequestException;
@@ -39,7 +38,7 @@ class Bot{
      */
     public function __construct(string $token, int $updatesMethod = self::NO_UPDATES){
         $this->token = $token;
-        $this->isProduction = Utils::isProduction();
+        $this->isProduction = \TelegramSDK\BotAPI\Utils\isProduction();
         $this->updatesMethod = $updatesMethod;
 
         if(!$this->isProduction){ // Assuming that you've tested the bot before pushing to production
