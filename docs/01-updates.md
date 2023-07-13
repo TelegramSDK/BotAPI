@@ -36,5 +36,6 @@ $updates = $bot->updates(true);
 ```
 
 Here's a list of the currently available general updates:
+* [`msg`](https://core.telegram.org/bots/api#message): The sent message.
 * [`user`](https://core.telegram.org/bots/api#user): The user that performed the action.
 * [`chat`](https://core.telegram.org/bots/api#chat): The chat where the action was performed.

@@ -36,9 +36,14 @@ class Updates{
             if($enableDefaultUpdates){
 
                 foreach($data->result ?? [$data] as &$upd){
-                    $upd->user = $upd->message->from ??
-                        $upd->message->sender_chat ??
-                        $upd->edited_message->from ??
+                    $upd->msg = $upd->message ??
+                        $upd->edited_message ??
+                        $upd->channel_post ??
+                        $upd->edited_channel_post ??
+                        null;
+
+                    $upd->user = $upd->msg->from ??
+                        $upd->msg->sender_chat ??
                         $upd->inline_query->from ??
                         $upd->chosen_inline_result->from ??
                         $upd->callback_query->from ??
@@ -48,10 +53,7 @@ class Updates{
                         $upd->chat_join_request->from ??
                         null;
 
-                    $upd->chat = $upd->message->chat ??
-                        $upd->edited_message->chat ??
-                        $upd->channel_post->chat ??
-                        $upd->edited_channel_post->chat ??
+                    $upd->chat = $upd->mgs->chat ??
                         $upd->callback_query->message->chat ??
                         $upd->my_chat_member->chat ??
                         $upd->chat_member->chat ??
