@@ -98,16 +98,17 @@ class Bot{
     /**
      * Retrieves updates from the Telegram API.
      *
-     * @param int|null $offset   The updates offset, only in UPDATES_FROM_WEBHOOK mode.
+     * @param bool $enableDefaultUpdates   Whether the default updates should be enabled or not.
+     * @param int|null $offset             The updates offset, only in UPDATES_FROM_WEBHOOK mode.
      *
-     * @return Updates|null      The retrieved updates, null on NO_UPDATES mode.
+     * @return Updates|null                The retrieved updates, null on NO_UPDATES mode.
      */
-    public function updates(?int $offset = null): ?Updates{
+    public function updates(bool $enableDefaultUpdates = false, ?int $offset = null): ?Updates{
         if($this->updatesMethod === self::UPDATES_FROM_GET_UPDATES){
 
             return new Updates($this->getUpdates([
-                "offset" => $offset + 1
-            ])->body);
+                "offset" => isset($offset) ? $offset + 1 : null
+            ])->body, $enableDefaultUpdates);
 
         }else if($this->updatesMethod === self::UPDATES_FROM_WEBHOOK){
 

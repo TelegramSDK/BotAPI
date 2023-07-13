@@ -22,9 +22,10 @@ class Updates{
     /**
      * Updates constructor.
      *
-     * @param object|null $data The data object containing Telegram updates.
+     * @param object|null $data            The data object containing Telegram updates.
+     * @param bool $enableDefaultUpdates   Whether the default updates should be enabled or not.
      */
-    public function __construct(?object $data){
+    public function __construct(?object $data, bool $enableDefaultUpdates = false){
         if($data !== NULL){
 
             if(isset($data->result[0]))
@@ -32,6 +33,32 @@ class Updates{
             else
                 $this->lastUpdateID = null;
 
+            if($enableDefaultUpdates){
+
+                foreach($data->result ?? [$data] as &$upd){
+                    $upd->user = $upd->message->from ??
+                        $upd->message->sender_chat ??
+                        $upd->edited_message->from ??
+                        $upd->inline_query->from ??
+                        $upd->chosen_inline_result->from ??
+                        $upd->callback_query->from ??
+                        $upd->shipping_query->from ??
+                        $upd->poll_answer->user ??
+                        $upd->chat_member->from ??
+                        $upd->chat_join_request->from ??
+                        null;
+
+                    $upd->chat = $upd->message->chat ??
+                        $upd->edited_message->chat ??
+                        $upd->channel_post->chat ??
+                        $upd->edited_channel_post->chat ??
+                        $upd->callback_query->message->chat ??
+                        $upd->my_chat_member->chat ??
+                        $upd->chat_member->chat ??
+                        $upd->chat_join_request->chat ??
+                        null;
+                }
+            }
 
             foreach($data as $key => $value)
                 $this->$key = $value;

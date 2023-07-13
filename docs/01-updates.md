@@ -27,3 +27,14 @@ $bot2 = new Bot("YOUR_BOT_TOKEN", Bot::UPDATES_FROM_WEBHOOK);
 $update = $bot2->updates();
 echo (json_encode($update) ?? "No updates found.") . "\n";
 ```
+
+## Default Updates
+The library provides general default updates to use
+
+```php
+$updates = $bot->updates(true);
+```
+
+Here's a list of the currently available general updates:
+* [`user`](https://core.telegram.org/bots/api#user): The user that performed the action.
+* [`chat`](https://core.telegram.org/bots/api#chat): The chat where the action was performed.

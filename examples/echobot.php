@@ -12,20 +12,20 @@ $bot = new Bot("YOUR_BOT_TOKEN", Bot::UPDATES_FROM_GET_UPDATES);
 echo GREEN_TEXT . "Bot Started!\n" . DEFAULT_TEXT;
 
 while(true){
-    $updates = $bot->updates($updates->lastUpdateID ?? null);
+    $updates = $bot->updates(true, $updates->lastUpdateID ?? null);
 
     foreach($updates->result as $update){
         if(isset($update->message)){
             $res = $bot->copyMessage([
-                "chat_id" => $update->message->chat->id,
-                "from_chat_id" => $update->message->chat->id,
+                "chat_id" => $update->chat->id,
+                "from_chat_id" => $update->chat->id,
                 "message_id" => $update->message->message_id
             ]);
 
             if($res->body->ok){
-                echo GREEN_TEXT . "Replied to " . $update->message->chat->id . "\n" . DEFAULT_TEXT;
+                echo GREEN_TEXT . "Replied to " . $update->chat->id . "\n" . DEFAULT_TEXT;
             } else{
-                echo RED_TEXT . "Coulnd't reply to " . $update->message->chat->id . ": " . $res->body->error . "\n" . DEFAULT_TEXT;
+                echo RED_TEXT . "Coulnd't reply to " . $update->chat->id . ": " . $res->body->error . "\n" . DEFAULT_TEXT;
             }
         }
     }
