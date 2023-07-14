@@ -53,7 +53,7 @@ class Updates{
                         $upd->chat_join_request->from ??
                         null;
 
-                    $upd->chat = $upd->mgs->chat ??
+                    $upd->chat = $upd->msg->chat ??
                         $upd->callback_query->message->chat ??
                         $upd->my_chat_member->chat ??
                         $upd->chat_member->chat ??
