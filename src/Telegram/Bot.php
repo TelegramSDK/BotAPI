@@ -69,7 +69,7 @@ class Bot{
      *
      * @throws TelegramException             If an error occurs during the request (in non-production mode).
      */
-    private function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10): ?TelegramResponse{
+    private function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10): TelegramResponse{
         $telegram_url = "https://api.telegram.org/bot" . $this->token . "/$method";
         $client = new Guzzle(['timeout' => $timeout]);
 
@@ -82,16 +82,21 @@ class Bot{
 
             return new TelegramResponse([
                 "statusCode" => $response->getStatusCode(),
-                "body" => $response->body
+                "body" => $response->body,
+                "error" => null
             ]);
 
         } catch(RequestException $e){
             if(!$this->isProduction)
                 throw new TelegramException($e->getMessage());
 
-            error_log($e->getMessage());
+            $response = $e->getResponse();
 
-            return null;
+            return new TelegramResponse([
+                "statusCode" => $response->getStatusCode() ?? null,
+                "body" => $response->getBody()->getContents() ?? null,
+                "error" => $e
+            ]);
         }
     }
 
