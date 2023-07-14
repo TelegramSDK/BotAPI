@@ -22,7 +22,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "TelegramSDK\\BotAPI\\": "src/"
+            "TelegramSDK\\BotAPI\\": "src/",
+            "TelegramSDK\\Utils\\": "src/Utils"
         },
         "files": [
             "src/Utils/functions.php"

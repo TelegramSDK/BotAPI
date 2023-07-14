@@ -1,6 +1,6 @@
 <?php
 
-use TelegramSDK\BotAPI\Utils\Translator;
+use TelegramSDK\Utils\Translator;
 
 it('translates a string', function () {
     $translator = new Translator((object)[
