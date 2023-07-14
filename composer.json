@@ -35,7 +35,7 @@
     },
     "scripts": {
         "test": "@php vendor/bin/pest --fail-on-warning --profile",
-        "psalm": "@php vendor/bin/psalm --config=psalm.xml",
+        "psalm": "@php vendor/bin/psalm --config=psalm.xml --show-info=true",
         "runkit": "./vendor/bin/install-runkit.sh"
     },
     "require": {

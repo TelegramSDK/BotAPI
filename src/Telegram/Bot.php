@@ -65,7 +65,7 @@ class Bot{
      * @param array|object|null $arguments   The arguments for the method.
      * @param int $timeout                   The request timeout.
      *
-     * @return TelegramResponse|null         The response from the Telegram API or null on RequestException.
+     * @return TelegramResponse              The response from the Telegram API or null on RequestException.
      *
      * @throws TelegramException             If an error occurs during the request (in non-production mode).
      */
@@ -132,9 +132,9 @@ class Bot{
      * @param string $method            The method to call.
      * @param array $arguments          The arguments for the method.
      *
-     * @return TelegramResponse|null    The response from sendRequest().
+     * @return TelegramResponse         The response from sendRequest().
      */
-    public function __call($method, $arguments): ?TelegramResponse{
+    public function __call($method, $arguments): TelegramResponse{
         return $this->sendRequest($method, ...$arguments);
     }
 }
