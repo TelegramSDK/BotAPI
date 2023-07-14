@@ -22,7 +22,7 @@ Assuming you have a file called `locales/en.json`:
 
 ```php
 <?php
-use TelegramSDK\BotAPI\Utils\Translator;
+use TelegramSDK\BotAPI\Translator;
 
 $user = $updates->message->from;
 

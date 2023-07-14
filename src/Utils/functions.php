@@ -3,12 +3,12 @@
  * This file provides a set of util functions for the library.
  *
  * @author Sebastiano Racca
- * @package TelegramSDK\BotAPI\Utils
+ * @package TelegramSDK\Utils
  */
 
 declare(strict_types=1);
 
-namespace TelegramSDK\BotAPI\Utils;
+namespace TelegramSDK\Utils;
 
 
 /**

@@ -4,12 +4,12 @@
  * This class provides a way to translate texts by replacing specific strings with their corresponding translations.
  *
  * @author Sebastiano Racca
- * @package TelegramSDK\BotAPI\Utils
+ * @package TelegramSDK\Utils
  * @see docs/02-translating.md
  */
 
 declare(strict_types=1);
-namespace TelegramSDK\BotAPI\Utils;
+namespace TelegramSDK\Utils;
 
 
 class Translator{
