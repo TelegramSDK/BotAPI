@@ -18,8 +18,8 @@ composer require telegramsdk/botapi
 ```
 
 # ❔ Usage
-* Full documentation can be found [here](https://github.com/TelegramSDK/BotAPI/tree/main/docs).
-* Examples can be found [here](https://github.com/TelegramSDK/BotAPI/tree/main/examples).
+* Full documentation can be found [here](https://botapi.racca.me).
+* Examples can be found [here](https://botapi.racca.me/docs/category/examples).
 
 # 📝 Testing
 Run Unit tests:
