@@ -127,6 +127,43 @@ class Bot{
     }
 
     /**
+     * Executes a function whenever there's an external request, not from Telegram.
+     *
+     * @param callable $function         The function t execute.
+     * @param string|null $secretToken   The token set as secret_token in setWebhook().
+     *
+     * @return bool                      Wheter the update is from Telegram or not.
+     */
+    public function onExternalRequest(callable $function, ?string $secretToken = null): bool{
+        if($this->updatesMethod === self::UPDATES_FROM_WEBHOOK) {
+
+            if(isset($secretToken)){
+
+                if($secretToken !== $_SERVER['HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN']){
+                    $function();
+                    return false;
+                }
+
+            } else {
+
+                if(strpos($_SERVER['HTTP_USER_AGENT'] ?? "", 'TelegramBot') === false) {
+                    $function();
+                    return false;
+
+                } else if(!$this->isProduction) {
+                    trigger_error("It is highly reccomended to set up a secret token.", E_USER_WARNING);
+                }
+
+            }
+
+        } else if(!$this->isProduction) {
+            trigger_error("You won't receive updates from Telegram if you don't use  webhook.", E_USER_WARNING);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Magic method for dynamically calling API methods.
      *
      * @param string $method            The method to call.
