@@ -40,6 +40,7 @@ class Updates{
                         $upd->edited_message ??
                         $upd->channel_post ??
                         $upd->edited_channel_post ??
+                        $upd->callback_query->message ??
                         null;
 
                     $upd->user = $upd->msg->from ??
