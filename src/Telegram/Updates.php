@@ -43,7 +43,8 @@ class Updates{
                         $upd->callback_query->message ??
                         null;
 
-                    $upd->user = $upd->msg->from ??
+                    $upd->user = $upd->callback_query->from ??
+                        $upd->msg->from ??
                         $upd->msg->sender_chat ??
                         $upd->inline_query->from ??
                         $upd->chosen_inline_result->from ??
