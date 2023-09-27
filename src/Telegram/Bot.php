@@ -139,7 +139,7 @@ class Bot{
 
             if(isset($secretToken)){
 
-                if($secretToken !== $_SERVER['HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN']){
+                if($secretToken !== ($_SERVER['HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN'] ?? null)){
                     $function();
                     return false;
                 }
