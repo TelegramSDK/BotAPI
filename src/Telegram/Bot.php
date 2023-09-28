@@ -94,7 +94,7 @@ class Bot{
 
             return new TelegramResponse([
                 "statusCode" => $response->getStatusCode() ?? null,
-                "body" => $response->getBody()->getContents() ?? null,
+                "body" => json_decode($response->getBody()->getContents() ?? null),
                 "error" => $e
             ]);
         }
