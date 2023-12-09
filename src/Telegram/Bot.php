@@ -32,7 +32,6 @@ class Bot
      * @param int|null $updatesMethod The updates method to use.
      * @param string $apiURL The API URL for Telegram requests.
      *
-     * @throws InvalidTokenException If an invalid token is provided.
      * @throws \InvalidArgumentException If an invalid updates method is provided.
      */
     public function __construct(string $token, ?int $updatesMethod = null, string $apiURL = self::DEFAULT_API_URL)
@@ -113,21 +112,20 @@ class Bot
     /**
      * Retrieves updates from the Telegram API.
      *
-     * @param bool $enableDefaultUpdates Whether the default updates should be enabled or not.
      * @param int|null $offset The updates offset, only in UPDATES_FROM_WEBHOOK mode.
      *
      * @return Update|null The retrieved updates, null on NO_UPDATES mode.
      */
-    public function updates(bool $enableDefaultUpdates = false, ?int $offset = null): ?Update
+    public function updates(?int $offset = null): ?Update
     {
         if ($this->updatesMethod === Update::UPDATES_FROM_GET_UPDATES) {
             return new Update($this->getUpdates([
                 "offset" => isset($offset) ? $offset + 1 : null
-            ])->getBody(), $this->updatesMethod, $enableDefaultUpdates);
+            ])->getBody(), $this->updatesMethod);
         }
 
         if ($this->updatesMethod === Update::UPDATES_FROM_WEBHOOK) {
-            return new Update(json_decode(file_get_contents("php://input")), $this->updatesMethod, $enableDefaultUpdates);
+            return new Update(json_decode(file_get_contents("php://input")), $this->updatesMethod);
         }
 
         return null;

@@ -20,6 +20,8 @@ class Update
 {
     private int $method;
     private ?int $lastUpdateID;
+    private object $data;
+    private array $customs = [ ];
     public bool $ok;
     public object|array $result;
 
@@ -31,23 +33,17 @@ class Update
      *
      * @param object|null $data The data object containing Telegram updates.
      * @param int $updatesMethod The updates method to use.
-     * @param bool $enableDefaultUpdates Whether the default updates should be enabled or not.
      */
-    public function __construct(?object $data, int $updatesMethod, bool $enableDefaultUpdates = false)
+    public function __construct(?object $data, int $updatesMethod)
     {
         self::validateUpdateMethod($updatesMethod);
         $this->method = $updatesMethod;
 
-        if ($data !== null) {
-            $this->lastUpdateID = isset($data->result[0]) ? $data->result[array_key_last($data->result)]->update_id ?? null : null;
+        $this->data = $data;
+        $this->lastUpdateID = isset($data->result[0]) ? $data->result[array_key_last($data->result)]->update_id ?? null : null;
 
-            if ($enableDefaultUpdates) {
-                $data = $this->getDefaultUpdates($data);
-            }
-
-            foreach ($data as $key => $value) {
-                $this->$key = $value;
-            }
+        foreach ($data as $key => $value) {
+            $this->$key = $value;
         }
     }
 
@@ -63,39 +59,6 @@ class Update
         if (!in_array($method, [self::UPDATES_FROM_GET_UPDATES, self::UPDATES_FROM_WEBHOOK])) {
             throw new InvalidUpdateException("The provided updates method is invalid");
         }
-    }
-
-    private function getDefaultUpdates(object $data): object
-    {
-        foreach($data->result ?? [$data] as &$upd) {
-            $upd->msg = $upd->message ??
-                $upd->edited_message ??
-                $upd->channel_post ??
-                $upd->edited_channel_post ??
-                $upd->callback_query->message ??
-                null;
-
-            $upd->user = $upd->callback_query->from ??
-                $upd->msg->from ??
-                $upd->msg->sender_chat ??
-                $upd->inline_query->from ??
-                $upd->chosen_inline_result->from ??
-                $upd->callback_query->from ??
-                $upd->shipping_query->from ??
-                $upd->poll_answer->user ??
-                $upd->chat_member->from ??
-                $upd->chat_join_request->from ??
-                null;
-
-            $upd->chat = $upd->msg->chat ??
-                $upd->callback_query->message->chat ??
-                $upd->my_chat_member->chat ??
-                $upd->chat_member->chat ??
-                $upd->chat_join_request->chat ??
-                null;
-        }
-
-        return $data;
     }
 
     /**
@@ -130,5 +93,66 @@ class Update
     public function getLastUpdateId(): ?int
     {
         return $this->lastUpdateID;
+    }
+
+    /**
+     * Get the message from the update.
+     *
+     * @return object|null The message object if present; otherwise, null.
+     */
+    public function getMessage(): ?object
+    {
+        if(!isset($customs['message'])) {
+            $this->customs['message'] = $this->data->message ??
+                $this->data->edited_message ??
+                $this->data->channel_post ??
+                $this->data->edited_channel_post ??
+                $this->data->callback_query->message ??
+                null;
+        }
+
+        return $this->customs['message'];
+    }
+
+    /**
+     * Get the chat from the update.
+     *
+     * @return object|null The chat object if present; otherwise, null.
+     */
+    public function getChat(): ?object {
+        if(!isset($customs['chat'])) {
+            $this->customs['message'] = $this->customs['message']->chat ??
+                $this->data->callback_query->message->chat ??
+                $this->data->my_chat_member->chat ??
+                $this->data->chat_member->chat ??
+                $this->data->chat_join_request->chat ??
+                null;
+        }
+
+        return $this->customs['message'];
+    }
+
+    /**
+     * Get the user from the update.
+     *
+     * @return object|null The user object if present; otherwise, null.
+     */
+    public function getUser(): ?object
+    {
+        if(!isset($customs['user'])) {
+            $this->customs['message'] = $this->data->callback_query->from ??
+                $this->customs['message']->from ??
+                $this->customs['message']->sender_chat ??
+                $this->data->inline_query->from ??
+                $this->data->chosen_inline_result->from ??
+                $this->data->callback_query->from ??
+                $this->data->shipping_query->from ??
+                $this->data->poll_answer->user ??
+                $this->data->chat_member->from ??
+                $this->data->chat_join_request->from ??
+                null;
+        }
+
+        return $this->customs['user'];
     }
 }

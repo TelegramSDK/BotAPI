@@ -22,23 +22,24 @@ echo GREEN_COLOR . "Bot Started!\n" . DEFAULT_COLOR;
 
 for ( ; ; sleep(5)) {
 
-    $updates = $bot->updates(true, isset($updates) ? $updates->getLastUpdateId() : null);
+    $updates = $bot->updates(isset($updates) ? $updates->getLastUpdateId() : null);
 
     foreach($updates->result as $update){
         if(isset($update->message)){
+            $chat = $update->getChat();
 
             try {
 
                 $res = $bot->copyMessage([
-                    "chat_id" => $update->chat->id,
-                    "from_chat_id" => $update->chat->id,
-                    "message_id" => $update->message->message_id
+                    "chat_id" => $chat->id,
+                    "from_chat_id" => $chat->id,
+                    "message_id" => $update->getMessage()->message_id
                 ]);
 
-                echo GREEN_COLOR . "Replied to " . $update->chat->id . "\n" . DEFAULT_COLOR;
+                echo GREEN_COLOR . "Replied to " . $chat->id . "\n" . DEFAULT_COLOR;
 
             } catch (TelegramException $e) {
-                echo RED_COLOR . "Coulnd't reply to " . $update->chat->id . ": " . $e->getResponseBody()->description . "\n" . DEFAULT_COLOR;
+                echo RED_COLOR . "Coulnd't reply to " . $chat->id . ": " . $e->getResponseBody()->description . "\n" . DEFAULT_COLOR;
             }
 
         }
