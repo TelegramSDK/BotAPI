@@ -1,177 +1,152 @@
 <?php
-/**
- * Telegram Bot class.
- * This class provides methods to send requests to Telegram or get the updates.
- *
- * @author Sebastiano Racca
- * @package TelegramSDK\BotAPI\Telegram
- * @see docs/00-introduction.md
- * @see docs/01-updates.md
- */
-
 declare(strict_types=1);
 
 namespace TelegramSDK\BotAPI\Telegram;
 
-use TelegramSDK\BotAPI\Exceptions\TelegramException;
-use GuzzleHttp\Client as Guzzle;
+use TelegramSDK\BotAPI\Exception\TelegramException;
+use TelegramSDK\BotAPI\Exception\InvalidTokenException;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
 
-class Bot{
-    protected string $token;
-    public int $updatesMethod;
-    private bool $isProduction;
 
-    public const NO_UPDATES = 0;
-    public const UPDATES_FROM_WEBHOOK = 1;
-    public const UPDATES_FROM_GET_UPDATES = 2;
+/**
+ * Telegram Bot class.
+ * This class provides methods to interact with the Telegram Bot API, send requests, and retrieve updates.
+ *
+ * @author Sebastiano Racca
+ * @package TelegramSDK\BotAPI\Telegram
+ * @link https://botapi.racca.me/docs/usage/general
+ */
+class Bot
+{
+    private string $token;
+    private int $updatesMethod;
+    private string $apiURL = "";
 
+    public const DEFAULT_API_URL = "https://api.telegram.org/bot";
 
     /**
      * Bot constructor.
      *
-     * @param string $token                The Telegram bot token.
-     * @param int $updatesMethod           The updates method to use.
+     * @param string $token The Telegram bot token.
+     * @param int|null $updatesMethod The updates method to use.
+     * @param string $apiURL The API URL for Telegram requests.
      *
-     * @throws TelegramException           If an the provided token is invalid (in non-production mode).
-     * @throws \InvalidArgumentException   If an invalid updates method is provided (in non-production mode).
+     * @throws InvalidTokenException If an invalid token is provided.
+     * @throws \InvalidArgumentException If an invalid updates method is provided.
      */
-    public function __construct(string $token, int $updatesMethod = self::NO_UPDATES){
+    public function __construct(string $token, ?int $updatesMethod = null, string $apiURL = self::DEFAULT_API_URL)
+    {
         $this->token = $token;
-        $this->isProduction = \TelegramSDK\Utils\isProduction();
-        $this->updatesMethod = $updatesMethod;
-
-        if(!$this->isProduction){ // Assuming that you've tested the bot before pushing to production
-            $this->getMe(); // Throws a TelegramException on invalid token
-            $this->isValidUpdatesMethod(); // Throws InvalidArgumentException on invalid update method
-        }
-
+        $this->updatesMethod = $updatesMethod ?? -1; // No update method, will throw an exception on $this->updates()
+        $this->apiURL = $apiURL;
     }
 
     /**
-     * Checks if the provided updates method is valid.
+     * Checks if the provided token is valid.
      *
-     * @throws \InvalidArgumentException If the updates method is invalid.
+     * @param bool $thoroughCheck If false, performs a superficial check; otherwise, verifies with the Telegram API.
+     *
+     * @return bool True if the token is valid; otherwise, false.
      */
-    private function isValidUpdatesMethod(): void{
-        if(!($this->updatesMethod >= 0 && $this->updatesMethod <= 2))
-            throw new \InvalidArgumentException("Invalid updates method.");
+    private function isValidToken(bool $thoroughCheck): bool
+    {
+        if (!preg_match('/[0-9]+:[A-Za-z0-9]+/', $this->token)) {
+            return false;
+        }
+
+        if (!$thoroughCheck) {
+            return true;
+        }
+
+        try {
+            return $this->getMe()->getBody()->ok;
+        } catch (TelegramException $e) {
+            return false;
+        }
     }
 
     /**
      * Sends a request to the Telegram API.
      *
-     * @param string $method                 The method to call.
-     * @param array|object|null $arguments   The arguments for the method.
-     * @param int $timeout                   The request timeout.
+     * @param string $method The method to call.
+     * @param array|object|null $arguments The arguments for the method.
+     * @param int $timeout The request timeout.
      *
-     * @return TelegramResponse              The response from the Telegram API or null on RequestException.
+     * @return TelegramResponse The response from the Telegram API or null on RequestException.
      *
-     * @throws TelegramException             If an error occurs during the request (in non-production mode).
+     * @throws TelegramException If an error occurs during the request (in non-production mode).
      */
-    protected function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10): TelegramResponse{
-        $telegram_url = "https://api.telegram.org/bot" . $this->token . "/$method";
-        $client = new Guzzle(['timeout' => $timeout]);
+    protected function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10): TelegramResponse
+    {
+        $telegramUrl = $this->apiURL . $this->token . "/$method";
+        $client = new GuzzleClient(['timeout' => $timeout]);
 
-        try{
+        try {
+            $options = [];
 
-            $response = $client->post($telegram_url, ['form_params' => $arguments]);
-            $stream = $response->getBody();
-            $response->body = json_decode($stream->getContents());
-            $stream->close();
+            if (!empty($arguments)) {
+                if (is_array($arguments)) {
+                    $options['form_params'] = $arguments;
+                } else {
+                    $options['json'] = $arguments;
+                }
+            }
 
-            return new TelegramResponse([
-                "statusCode" => $response->getStatusCode(),
-                "body" => $response->body,
-                "error" => null
-            ]);
+            $response = $client->post($telegramUrl, $options);
 
-        } catch(RequestException $e){
-            if(!$this->isProduction)
-                throw new TelegramException($e->getMessage());
+            $body = json_decode($response->getBody()->getContents());
 
+            return new TelegramResponse($body, $response->getStatusCode(), null);
+
+        } catch (RequestException $e) {
             $response = $e->getResponse();
 
-            return new TelegramResponse([
-                "statusCode" => $response->getStatusCode() ?? null,
-                "body" => json_decode($response->getBody()->getContents() ?? null),
-                "error" => $e
-            ]);
+            throw new TelegramException(
+                $e->getMessage(),
+                $response ? $response->getStatusCode() : 400,
+                $response ? json_decode($response->getBody()->getContents()) : null
+            );
         }
     }
 
     /**
      * Retrieves updates from the Telegram API.
      *
-     * @param bool $enableDefaultUpdates   Whether the default updates should be enabled or not.
-     * @param int|null $offset             The updates offset, only in UPDATES_FROM_WEBHOOK mode.
+     * @param bool $enableDefaultUpdates Whether the default updates should be enabled or not.
+     * @param int|null $offset The updates offset, only in UPDATES_FROM_WEBHOOK mode.
      *
-     * @return Updates|null                The retrieved updates, null on NO_UPDATES mode.
+     * @return Update|null The retrieved updates, null on NO_UPDATES mode.
      */
-    public function updates(bool $enableDefaultUpdates = false, ?int $offset = null): ?Updates{
-        if($this->updatesMethod === self::UPDATES_FROM_GET_UPDATES){
-
-            return new Updates($this->getUpdates([
+    public function updates(bool $enableDefaultUpdates = false, ?int $offset = null): ?Update
+    {
+        if ($this->updatesMethod === Update::UPDATES_FROM_GET_UPDATES) {
+            return new Update($this->getUpdates([
                 "offset" => isset($offset) ? $offset + 1 : null
-            ])->body, $enableDefaultUpdates);
-
-        }else if($this->updatesMethod === self::UPDATES_FROM_WEBHOOK){
-
-            return new Updates(json_decode(file_get_contents("php://input")), $enableDefaultUpdates);
-
-        } else{
-
-            return NULL;
-
+            ])->getBody(), $this->updatesMethod, $enableDefaultUpdates);
         }
-    }
 
-    /**
-     * Executes a function whenever there's an external request, not from Telegram.
-     *
-     * @param callable $function         The function t execute.
-     * @param string|null $secretToken   The token set as secret_token in setWebhook().
-     *
-     * @return bool                      Wheter the update is from Telegram or not.
-     */
-    public function onExternalRequest(callable $function, ?string $secretToken = null): bool{
-        if($this->updatesMethod === self::UPDATES_FROM_WEBHOOK) {
-
-            if(isset($secretToken)){
-
-                if($secretToken !== ($_SERVER['HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN'] ?? null)){
-                    $function();
-                    return false;
-                }
-
-            } else {
-
-                if(strpos($_SERVER['HTTP_USER_AGENT'] ?? "", 'TelegramBot') === false) {
-                    $function();
-                    return false;
-
-                } else if(!$this->isProduction) {
-                    trigger_error("It is highly reccomended to set up a secret token.", E_USER_WARNING);
-                }
-
-            }
-
-        } else if(!$this->isProduction) {
-            trigger_error("You won't receive updates from Telegram if you don't use  webhook.", E_USER_WARNING);
-            return false;
+        if ($this->updatesMethod === Update::UPDATES_FROM_WEBHOOK) {
+            return new Update(json_decode(file_get_contents("php://input")), $this->updatesMethod, $enableDefaultUpdates);
         }
-        return true;
+
+        return null;
     }
 
     /**
      * Magic method for dynamically calling API methods.
      *
-     * @param string $method            The method to call.
-     * @param array $arguments          The arguments for the method.
+     * @param string $method The method to call.
+     * @param array $arguments The arguments for the method.
      *
-     * @return TelegramResponse         The response from sendRequest().
+     * @return TelegramResponse The response from sendRequest().
      */
-    public function __call($method, $arguments): TelegramResponse{
+    public function __call($method, $arguments): mixed
+    {
+        if (method_exists($this, $method)) {
+            return $this->$method(...$arguments);
+        }
+
         return $this->sendRequest($method, ...$arguments);
     }
 }

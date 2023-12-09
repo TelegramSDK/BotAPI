@@ -1,6 +1,6 @@
 <?php
 
-use TelegramSDK\BotAPI\Telegram\Updates;
+use TelegramSDK\BotAPI\Telegram\Update;
 
 it("sets lastUpdateID correctly when data contains result", function () {
     $data = (object) [
@@ -12,9 +12,9 @@ it("sets lastUpdateID correctly when data contains result", function () {
         ],
     ];
 
-    $updates = new Updates($data);
+    $updates = new Update($data, Update::UPDATES_FROM_WEBHOOK);
 
-    expect($updates->lastUpdateID)->toBe(3);
+    expect($updates->getLastUpdateId())->toBe(3);
 });
 
 it("sets lastUpdateID to null when data does not contain result", function () {
@@ -25,7 +25,7 @@ it("sets lastUpdateID to null when data does not contain result", function () {
         ]
     ];
 
-    $updates = new Updates($data);
+    $updates = new Update($data, Update::UPDATES_FROM_WEBHOOK);
 
-    expect($updates->lastUpdateID)->toBeNull();
+    expect($updates->getLastUpdateId())->toBeNull();
 });

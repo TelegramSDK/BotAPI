@@ -1,21 +1,22 @@
 <?php
 
 use TelegramSDK\BotAPI\Telegram\Bot;
-use TelegramSDK\BotAPI\Exceptions\TelegramException;
+use TelegramSDK\BotAPI\Exception\TelegramException;
 
 
-it("throws an exception on invalid token in non-production environment", function () {
+it("returns false on invalid token syntax", function () {
+    $bot = new Bot("an invalid bot token");
+    expect($bot->isValidToken(true))->toBeFalse();
+});
+
+it("returns false on invalid token", function () {
+    $bot = new Bot("123:abc");
+    expect($bot->isValidToken(false))->toBeFalse();
+});
+
+it("throws an exception on invalid token", function () {
     $this->expectException(TelegramException::class);
 
     $bot = new Bot("an invalid bot token");
-});
-
-it("doens't throw an exception on invalid token in production environment", function () {
-    if(defined("PRODUCTION"))
-        runkit7_constant_redefine("PRODUCTION", true);
-    else
-        define("PRODUCTION", true);
-
-    expect(new Bot("an invalid bot token"))
-        ->toBeInstanceOf(Bot::class);
+    $bot->getMe();
 });
