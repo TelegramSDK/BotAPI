@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TelegramSDK\BotAPI\Exception;
-
 
 /**
  * TelegramException class represents exceptions specific to the Telegram SDK.

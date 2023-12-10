@@ -5,7 +5,6 @@ require_once  "vendor/autoload.php";
 use TelegramSDK\BotAPI\Exception\TelegramException;
 use TelegramSDK\BotAPI\Telegram\{Bot, Update};
 
-
 define("GREEN_COLOR", "\033[0;32m");
 define("RED_COLOR", "\033[0;31m");
 define("DEFAULT_COLOR", "\033[0m");
@@ -20,12 +19,12 @@ if(!$bot->isValidToken(true)) {
 
 echo GREEN_COLOR . "Bot Started!\n" . DEFAULT_COLOR;
 
-for ( ; ; sleep(5)) {
+for (; ; sleep(5)) {
 
     $updates = $bot->updates(isset($updates) ? $updates->getLastUpdateId() : null);
 
-    foreach($updates->result as $update){
-        if(isset($update->message)){
+    foreach($updates->result as $update) {
+        if(isset($update->message)) {
             $chat = $update->getChat();
 
             try {

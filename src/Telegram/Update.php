@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TelegramSDK\BotAPI\Telegram;
 
 use TelegramSDK\BotAPI\Exception\InvalidUpdateException;
-
 
 /**
  * Telegram Update class.
@@ -119,7 +119,8 @@ class Update
      *
      * @return object|null The chat object if present; otherwise, null.
      */
-    public function getChat(): ?object {
+    public function getChat(): ?object
+    {
         if(!isset($customs['chat'])) {
             $this->customs['message'] = $this->customs['message']->chat ??
                 $this->data->callback_query->message->chat ??

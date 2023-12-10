@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TelegramSDK\BotAPI\Telegram;
@@ -7,7 +8,6 @@ use TelegramSDK\BotAPI\Exception\TelegramException;
 use TelegramSDK\BotAPI\Exception\InvalidTokenException;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
-
 
 /**
  * Telegram Bot class.
