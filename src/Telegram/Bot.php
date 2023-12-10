@@ -48,7 +48,7 @@ class Bot
      *
      * @return bool True if the token is valid; otherwise, false.
      */
-    private function isValidToken(bool $thoroughCheck): bool
+    public function isValidToken(bool $thoroughCheck): bool
     {
         if (!preg_match('/[0-9]+:[A-Za-z0-9]+/', $this->token)) {
             return false;
