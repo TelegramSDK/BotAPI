@@ -122,7 +122,7 @@ class Update
     public function getChat(): ?object
     {
         if(!isset($customs['chat'])) {
-            $this->customs['message'] = $this->customs['message']->chat ??
+            $this->customs['chat'] = $this->customs['chat']->chat ??
                 $this->data->callback_query->message->chat ??
                 $this->data->my_chat_member->chat ??
                 $this->data->chat_member->chat ??
@@ -130,7 +130,7 @@ class Update
                 null;
         }
 
-        return $this->customs['message'];
+        return $this->customs['chat'];
     }
 
     /**
@@ -141,9 +141,9 @@ class Update
     public function getUser(): ?object
     {
         if(!isset($customs['user'])) {
-            $this->customs['message'] = $this->data->callback_query->from ??
-                $this->customs['message']->from ??
-                $this->customs['message']->sender_chat ??
+            $this->customs['user'] = $this->data->callback_query->from ??
+                $this->customs['user']->from ??
+                $this->customs['user']->sender_chat ??
                 $this->data->inline_query->from ??
                 $this->data->chosen_inline_result->from ??
                 $this->data->callback_query->from ??
