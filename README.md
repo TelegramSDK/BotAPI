@@ -10,7 +10,7 @@
 <br>
 
 
-# 🛠 Instalation
+# 🛠 Installation
 You can install the package via composer:
 
 ```bash
