@@ -31,13 +31,15 @@
     }
   },
   "scripts": {
-    "test": "@php vendor/bin/pest --fail-on-warning --profile"
+    "test": "@php vendor/bin/pest --fail-on-warning --profile",
+    "lint": "vendor/bin/php-cs-fixer fix ."
   },
   "require": {
     "guzzlehttp/guzzle": "^7.7",
     "php": ">=8.0"
   },
   "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.46",
     "pestphp/pest": "^2.8"
   },
   "config": {

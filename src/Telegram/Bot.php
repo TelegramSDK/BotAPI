@@ -40,7 +40,7 @@ class Bot
         ?int $updatesMethod = null,
         string $apiURL = self::DEFAULT_API_URL,
         bool $replyWithPayload = false
-    ){
+    ) {
         $this->token = $token;
         $this->updatesMethod = $updatesMethod ?? -1; // No update method, will throw an exception on $this->updates()
         $this->apiURL = $apiURL;
