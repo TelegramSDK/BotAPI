@@ -21,7 +21,8 @@ class Bot
 {
     private string $token;
     private int $updatesMethod;
-    private string $apiURL = "";
+    private string $apiURL;
+    private bool $payload;
 
     public const DEFAULT_API_URL = "https://api.telegram.org/bot";
 
@@ -34,11 +35,16 @@ class Bot
      *
      * @throws \InvalidArgumentException If an invalid updates method is provided.
      */
-    public function __construct(string $token, ?int $updatesMethod = null, string $apiURL = self::DEFAULT_API_URL)
-    {
+    public function __construct(
+        string $token,
+        ?int $updatesMethod = null,
+        string $apiURL = self::DEFAULT_API_URL,
+        bool $replyWithPayload = false
+    ){
         $this->token = $token;
         $this->updatesMethod = $updatesMethod ?? -1; // No update method, will throw an exception on $this->updates()
         $this->apiURL = $apiURL;
+        $this->asPayload($replyWithPayload);
     }
 
     /**
@@ -63,6 +69,25 @@ class Bot
         } catch (TelegramException $e) {
             return false;
         }
+    }
+
+    /**
+     * Replies directly to the webhook update with a payload in the body.
+     *
+     * @param string $method The API method.
+     * @param array|object|null $arguments The arguments for the method.
+     *
+     * @return void
+     */
+    protected function replyAsPayload(string $method, array|object|null $arguments = null): void
+    {
+        $payload = json_encode(['method' => $method, ...$arguments], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+
+        header('Content-Type: application/json');
+        header('Content-Length: ' . strlen($payload));
+        echo $payload;
+
+        fastcgi_finish_request();
     }
 
     /**
@@ -132,12 +157,28 @@ class Bot
     }
 
     /**
+     * Sets how to reply to the Telegram API.
+     * @param bool $enablePayload Set to true to send a payload insted of another request, false to send a request.
+     * @return void
+     */
+    public function asPayload(bool $enablePayload = true): void
+    {
+        $this->payload = $enablePayload;
+
+        if($enablePayload) {
+            if($this->updatesMethod !== Update::UPDATES_FROM_WEBHOOK || !function_exists('fastcgi_finish_request')) {
+                throw new \LogicException("Can't send payload on response if php-fpm isn't enabled");
+            }
+        }
+    }
+
+    /**
      * Magic method for dynamically calling API methods.
      *
-     * @param string $method The method to call.
+     * @param string $method The API method.
      * @param array $arguments The arguments for the method.
      *
-     * @return TelegramResponse The response from sendRequest().
+     * @return TelegramResponse|null The response from sendRequest() or null if the API call was sent as a payload.
      */
     public function __call($method, $arguments): mixed
     {
@@ -145,6 +186,11 @@ class Bot
             return $this->$method(...$arguments);
         }
 
-        return $this->sendRequest($method, ...$arguments);
+        if(!$this->payload) {
+            return $this->sendRequest($method, ...$arguments);
+        }
+
+        $this->replyAsPayload($method, ...$arguments);
+        return null;
     }
 }
