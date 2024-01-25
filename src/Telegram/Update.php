@@ -42,7 +42,7 @@ class Update
         $this->data = $data;
         $this->lastUpdateID = isset($data->result[0]) ? $data->result[array_key_last($data->result)]->update_id ?? null : null;
 
-        foreach ($data as $key => $value) {
+        foreach ($data ?? [] as $key => $value) {
             $this->$key = $value;
         }
     }
