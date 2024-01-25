@@ -13,9 +13,9 @@ namespace TelegramSDK\BotAPI\Telegram;
  */
 class TelegramResponse
 {
-    private object|array $body;
-    private ?int $statusCode;
-    private ?string $error;
+    public object|array $body;
+    public ?int $statusCode;
+    public ?string $error;
 
     /**
      * TelegramResponse constructor.
@@ -29,15 +29,5 @@ class TelegramResponse
         $this->body = $body;
         $this->statusCode = $statusCode;
         $this->error = $error;
-    }
-
-    /**
-     * Get the response body from the Telegram API.
-     *
-     * @return object|array The response body.
-     */
-    public function getBody(): object|array
-    {
-        return $this->body;
     }
 }
