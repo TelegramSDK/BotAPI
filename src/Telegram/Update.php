@@ -20,7 +20,7 @@ class Update
 {
     private int $method;
     private ?int $lastUpdateID;
-    private object $data;
+    private ?object $data;
     private array $customs = [ ];
     public bool $ok;
     public object|array $result;
