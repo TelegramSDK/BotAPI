@@ -142,8 +142,8 @@ class Update
     {
         if(!isset($this->customs['user'])) {
             $this->customs['user'] = $this->data->callback_query->from ??
-                $this->getChat()->from ??
-                $this->getChat()->sender_chat ??
+                $this->getMessage()->from ??
+                $this->getMessage()->sender_chat ??
                 $this->data->inline_query->from ??
                 $this->data->chosen_inline_result->from ??
                 $this->data->callback_query->from ??
