@@ -109,11 +109,7 @@ class Bot
             $options = [];
 
             if (!empty($arguments)) {
-                if (is_array($arguments)) {
-                    $options['form_params'] = $arguments;
-                } else {
-                    $options['json'] = $arguments;
-                }
+                $options['json'] = $arguments;
             }
 
             $response = $client->post($telegramUrl, $options);
