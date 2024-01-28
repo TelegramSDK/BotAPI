@@ -156,4 +156,30 @@ class Update
 
         return $this->customs['user'];
     }
+
+    /**
+     * Returns the trigger of the update.
+     * A textual message in the chat.
+     * i.e. A command, a caption, a callback data, ...
+     *
+     * @return string|null A string rappresenting the trigger.
+     */
+    public function getTrigger(): ?string
+    {
+        if(!isset($this->customs['trigger'])) {
+            $message = $this->data->message ??
+                $this->data->edited_message ??
+                $this->data->channel_post ??
+                $this->data->edited_channel_post ??
+                null;
+
+            $this->customs['trigger'] = $message->text ??
+                $message->caption ??
+                $this->data->inline_query->query ??
+                $this->data->callback_query->data ??
+                null;
+        }
+
+        return $this->customs['trigger'];
+    }
 }
