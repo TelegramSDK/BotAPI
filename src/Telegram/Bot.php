@@ -64,7 +64,7 @@ class Bot
         }
 
         try {
-            return $this->getMe()->getBody()->ok;
+            return $this->getMe()->body->ok;
         } catch (TelegramException $e) {
             return false;
         }
@@ -141,7 +141,7 @@ class Bot
         if ($this->updatesMethod === Update::UPDATES_FROM_GET_UPDATES) {
             return new Update($this->getUpdates([
                 "offset" => isset($offset) ? $offset + 1 : null
-            ])->getBody(), $this->updatesMethod);
+            ])->body, $this->updatesMethod);
         }
 
         if ($this->updatesMethod === Update::UPDATES_FROM_WEBHOOK) {
