@@ -18,7 +18,7 @@ use GuzzleHttp\Exception\RequestException;
  */
 class Bot
 {
-    private string $token;
+    protected string $token;
     private int $updatesMethod;
     private string $apiURL;
     private bool $payload;
