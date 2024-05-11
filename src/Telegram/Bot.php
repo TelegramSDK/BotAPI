@@ -83,11 +83,11 @@ class Bot
      * Replies directly to the webhook update with a payload in the body.
      *
      * @param string $method The API method.
-     * @param array|object|null $arguments The arguments for the method.
+     * @param array|object $arguments The arguments for the method.
      *
      * @return void
      */
-    protected function replyAsPayload(string $method, array|object|null $arguments = null): void
+    protected function replyAsPayload(string $method, array|object $arguments = []): void
     {
         $payload = json_encode(['method' => $method, ...$arguments], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 
