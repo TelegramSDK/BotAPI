@@ -24,7 +24,6 @@ class Bot
     private bool $payload;
 
     public const DEFAULT_API_URL = "https://api.telegram.org/";
-    public
 
     /**
      * Bot constructor.
