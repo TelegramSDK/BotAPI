@@ -23,7 +23,8 @@ class Bot
     private string $apiURL;
     private bool $payload;
 
-    public const DEFAULT_API_URL = "https://api.telegram.org/bot";
+    public const DEFAULT_API_URL = "https://api.telegram.org/";
+    public
 
     /**
      * Bot constructor.
@@ -44,6 +45,15 @@ class Bot
         $this->updatesMethod = $updatesMethod ?? -1; // No update method, will throw an exception on $this->updates()
         $this->apiURL = $apiURL;
         $this->asPayload($replyWithPayload);
+    }
+
+    /**
+     * Gets the api url.
+     *
+     * @return string The url.
+     */
+    public function getApiUrl(): string {
+        return $this->apiURL;
     }
 
     /**
@@ -90,6 +100,26 @@ class Bot
     }
 
     /**
+     * Download a file from the server.
+     *
+     * @param string $path The file_path given by /getFile.
+     * @param string $destination The destination of the file to be downloaded.
+     * @param int $timeout The request timeout.
+     *
+     * @return bool Wheter the download was successfull or not.
+     */
+    public function downloadFile(string $path, string $destination, $timeout = 10) {
+        try {
+            $client = new GuzzleClient(['timeout' => $timeout]);
+            $response = $client->request('GET', $this->apiURL . 'file/bot' . $this->token . "/$path");
+
+            return (bool)@file_put_contents($destination, $response->getBody());
+        } catch(RequestException $e) {
+            return false;
+        }
+    }
+
+    /**
      * Sends a request to the Telegram API.
      *
      * @param string $method The method to call.
@@ -98,11 +128,11 @@ class Bot
      *
      * @return TelegramResponse The response from the Telegram API or null on RequestException.
      *
-     * @throws TelegramException If an error occurs during the request (in non-production mode).
+     * @throws TelegramException If an error occurs during the request.
      */
     protected function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10): TelegramResponse
     {
-        $telegramUrl = $this->apiURL . $this->token . "/$method";
+        $telegramUrl = $this->apiURL . 'bot' . $this->token . "/$method";
         $client = new GuzzleClient(['timeout' => $timeout]);
 
         try {
