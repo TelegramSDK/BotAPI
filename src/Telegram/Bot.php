@@ -124,12 +124,13 @@ class Bot
      * @param string $method The method to call.
      * @param array|object|null $arguments The arguments for the method.
      * @param int $timeout The request timeout.
+     * @param bool $multipart Pass true to use 'multipart/form-data', false to use 'application/json'.
      *
      * @return TelegramResponse The response from the Telegram API or null on RequestException.
      *
      * @throws TelegramException If an error occurs during the request.
      */
-    protected function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10): TelegramResponse
+    protected function sendRequest(string $method, array|object|null $arguments = null, $timeout = 10, bool $multipart = false): TelegramResponse
     {
         $telegramUrl = $this->apiURL . 'bot' . $this->token . "/$method";
         $client = new GuzzleClient(['timeout' => $timeout]);
@@ -138,7 +139,7 @@ class Bot
             $options = [];
 
             if (!empty($arguments)) {
-                $options['json'] = $arguments;
+                $options[$multipart ? 'multipart' : 'json'] = $arguments;
             }
 
             $response = $client->post($telegramUrl, $options);
