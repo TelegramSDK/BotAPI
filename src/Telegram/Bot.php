@@ -109,11 +109,16 @@ class Bot
      */
     public function downloadFile(string $path, string $destination, $timeout = 10) {
         try {
-            $client = new GuzzleClient(['timeout' => $timeout]);
-            $response = $client->request('GET', $this->apiURL . 'file/bot' . $this->token . "/$path");
+            $client = new GuzzleClient([
+                'timeout' => $timeout,
+                'stream' => true,
+                'sink' => $destination,
+            ]);
+            $client->request('GET', $this->apiURL . 'file/bot' . $this->token . "/$path");
 
-            return (bool)@file_put_contents($destination, $response->getBody());
+            return true;
         } catch(RequestException $e) {
+            unlink($destination);
             return false;
         }
     }
