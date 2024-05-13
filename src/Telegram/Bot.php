@@ -51,7 +51,8 @@ class Bot
      *
      * @return string The url.
      */
-    public function getApiUrl(): string {
+    public function getApiUrl(): string
+    {
         return $this->apiURL;
     }
 
@@ -107,7 +108,8 @@ class Bot
      *
      * @return bool Wheter the download was successfull or not.
      */
-    public function downloadFile(string $path, string $destination, $timeout = 10) {
+    public function downloadFile(string $path, string $destination, $timeout = 10): bool
+    {
         try {
             $client = new GuzzleClient([
                 'timeout' => $timeout,
