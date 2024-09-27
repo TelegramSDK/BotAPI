@@ -214,8 +214,8 @@ class Bot
      */
     public function __call($method, $arguments): mixed
     {
-        if (method_exists($this, $method)) {
-            return $this->$method(...$arguments);
+        if (method_exists(self::class, $method)) {
+            return self::$method(...$arguments);
         }
 
         if(!$this->payload) {
