@@ -42,6 +42,9 @@
     "friendsofphp/php-cs-fixer": "^3.46",
     "pestphp/pest": "^2.8"
   },
+  "suggest": {
+    "telegramsdk/botkit": "This package provides additional features for your IDE."
+  },
   "config": {
     "allow-plugins": {
       "pestphp/pest-plugin": true
